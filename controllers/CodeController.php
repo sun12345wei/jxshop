@@ -30,6 +30,20 @@ class CodeController
         // 生成 视图目录
         @mkdir(ROOT . 'view/'.$tableName, 0777);
 
+        // 取出这个表中所有的字段信息
+        $sql = "SHOW FULL FIELDS FROM $tableName";
+
+        $db = \libs\Db::make();
+        // 预处理
+        $stmt = $db->prepare($sql);
+        
+        // 执行 SQL
+        $stmt->execute();
+        // 取出字段数据
+        $fields = $stmt->fetchAll( \PDO::FETCH_ASSOC );
+        var_dump($fields);
+        // die;
+
         // create.html
         ob_start();
         include(ROOT . 'templates/create.html');
