@@ -33,7 +33,7 @@ class BrandController{
         $model = new Brand;
         $data=$model->findOne($_GET['id']);
         view('brand/edit', [
-            'data' => $data,    
+            'data' => $data,
         ]);
     }
 

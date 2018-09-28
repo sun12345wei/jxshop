@@ -25,7 +25,7 @@ class Model
 
     public function insert()
     {
-        // $this->_before_write();
+        $this->_before_write();
         // var_dump($this->data);
         // die;
         $keys=[];
@@ -47,7 +47,7 @@ class Model
         $stmt->execute($values);
         $this->data['id'] = $this->_db->lastInsertId();
 
-        // $this->_after_write();
+        $this->_after_write();
     }
 
     // 接收表单中的数据
