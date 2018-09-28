@@ -6,43 +6,57 @@ class CodeController
     // 生成代码
     public function make()
     {
-        // 1. 接收参数（表名）
+        // 1. 接收参数（生成代码的表名）
         $tableName = $_GET['name'];
 
-        // 2. 生成控制器
-        // 拼出控制器的名字
-        $cname = ucfirst($tableName).'Controller';
+        // 取出这个表中所有的字段信息
+        $sql = "SHOW FULL FIELDS FROM $tableName";
+        $db = \libs\Db::make();
+        // 预处理
+        $stmt = $db->prepare($sql);
+        // 执行 SQL
+        $stmt->execute();
+        // 取出数据
+        $fields = $stmt->fetchAll( \PDO::FETCH_ASSOC );
 
-        // 加载模板
+        // 收集所有字段的白名单
+        $fillable = [];
+        foreach($fields as $v)
+        {
+            if($v['Field'] == 'id' || $v['Field'] == 'created_at')
+                continue ;
+            $fillable[] = $v['Field'];
+        }
+        $fillable = implode("','", $fillable);
+
+        $mname = ucfirst($tableName);
+
+        // 2. 生成控制器
+        // 拼出控制名的名字
+        $cname = ucfirst($tableName).'Controller';
+        /*
+        加载模板
+        */
         ob_start();
         include(ROOT . 'templates/controller.php');
         $str = ob_get_clean();
         file_put_contents(ROOT.'controllers/'.$cname.'.php', "<?php\r\n".$str);
 
         // 3. 生成模型
-        $mname = ucfirst($tableName);
+        
         ob_start();
         include(ROOT . 'templates/model.php');
         $str = ob_get_clean();
         file_put_contents(ROOT.'models/'.$mname.'.php', "<?php\r\n".$str);
 
         // 4. 生成视图文件
-        // 生成 视图目录
+        // 生成视图目录
         @mkdir(ROOT . 'view/'.$tableName, 0777);
 
-        // 取出这个表中所有的字段信息
-        $sql = "SHOW FULL FIELDS FROM $tableName";
+        // echo '<pre>';
+        // var_dump( $fields );
 
-        $db = \libs\Db::make();
-        // 预处理
-        $stmt = $db->prepare($sql);
-        
-        // 执行 SQL
-        $stmt->execute();
-        // 取出字段数据
-        $fields = $stmt->fetchAll( \PDO::FETCH_ASSOC );
-        var_dump($fields);
-        // die;
+        // exit;
 
         // create.html
         ob_start();
@@ -62,4 +76,5 @@ class CodeController
         $str = ob_get_clean();
         file_put_contents(ROOT.'view/'.$tableName.'/index.html', $str);
 
-    }}
+    }
+}
