@@ -12,7 +12,6 @@ class Brand extends Model
     public function _before_write()
     {
         $this->_delete_logo();
-
         // 实现上传图片的代码
         $uploader = \libs\Uploader::make();
         $logo = '/uploads/' . $uploader->upload('logo', 'brand');
