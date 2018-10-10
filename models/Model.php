@@ -87,7 +87,7 @@ class Model
         $sql = "UPDATE {$this->table} SET $set WHERE id=?";
 
         $stmt = $this->_db->prepare($sql);
-        $stmt->execute($values);
+        $data = $stmt->execute($values);
         $this->_after_write();
     }
 
@@ -171,7 +171,9 @@ class Model
     public function tree()
     {
         // 先取出所有的权限
-        $data = $this->findAll();
+        $data = $this->findAll([
+            'per_page'=>999999
+        ]);
         // 递归重新排序
         $ret = $this->_tree($data['data']);
         return $ret;

@@ -2,6 +2,8 @@
 
 define('ROOT', __DIR__ . '/../');
 
+session_start();
+
 // 引入函数文件
 require(ROOT.'libs\functions.php');
 

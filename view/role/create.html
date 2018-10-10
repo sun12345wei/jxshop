@@ -35,7 +35,7 @@
                         <?php foreach($data as $v): ?>
                             <input type="checkbox" name="pri_id[]" value="<?=$v['id']?>">
                             <?=str_repeat('-', $v['level']*8)?>
-                            <?=$v['pri_name']?> <br>
+                            <?=$v['pri_name']?> <br><br>
                         <?php endforeach; ?>
                     </td>
                 </tr>
